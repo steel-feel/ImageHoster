@@ -93,9 +93,20 @@ public class ImageController {
 
     //The method first needs to convert the list of all the tags to a string containing all the tags separated by a comma and then add this string in a Model type object
     //This string is then displayed by 'edit.html' file as previous tags of an image
+    //FIX: added session parameter
     @RequestMapping(value = "/editImage")
-    public String editImage(@RequestParam("imageId") Integer imageId, Model model) {
+    public String editImage(@RequestParam("imageId") Integer imageId,HttpSession session , Model model) {
+
+        User user = (User) session.getAttribute("loggeduser");
         Image image = imageService.getImage(imageId);
+
+        if(image.getUser().getId() != user.getId())
+        {
+            model.addAttribute("editError", new Boolean(true));
+            model.addAttribute("image", image);
+            model.addAttribute("tags", image.getTags());
+            return "images/image" ;
+        }
 
         String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
@@ -134,7 +145,9 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+
+       //FIX: Path correction for viewing particular image
+        return "redirect:/images/" + updatedImage.getId() + "/" +updatedImage.getTitle();
     }
 
 
