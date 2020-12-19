@@ -222,28 +222,7 @@ public class ImageController {
 
         return tagString.toString();
     }
-    //Method to Post comments on image by particular user
-    ///image/'+ ${image.id} + '/' + ${image.title} + '/comments
-    @RequestMapping(value = "image/{id}/{title}/comments", method = RequestMethod.POST)
-    private String postComment(@PathVariable("id") Integer imageId, @RequestParam (name = "comment") String commentText, HttpSession session )
-    {
-        Image image = imageService.getImage(imageId);
-        User user = (User) session.getAttribute("loggeduser");
 
-        Comment newComment = new Comment();
-        newComment.setText(commentText);
-        newComment.setUser(user);
-        newComment.setCreatedDate(new Date());
-        newComment.setImage(image);
-
-
-        image.getComments().add(newComment);
-
-        imageService.updateImage(image);
-
-        return "redirect:/images/{id}/{title}";
-
-    }
 
 
 
