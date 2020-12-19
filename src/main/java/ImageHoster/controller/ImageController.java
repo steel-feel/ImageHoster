@@ -100,17 +100,15 @@ public class ImageController {
         User user = (User) session.getAttribute("loggeduser");
         Image image = imageService.getImage(imageId);
 
-        if(image.getUser().getId() != user.getId())
-        {
-            model.addAttribute("editError", new Boolean(true));
-            model.addAttribute("image", image);
-            model.addAttribute("tags", image.getTags());
-            return "images/image" ;
-        }
-
         String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
         model.addAttribute("tags", tags);
+        if(image.getUser().getId() != user.getId())
+        {
+            model.addAttribute("editError", new Boolean(true));
+            return "images/image" ;
+        }
+
         return "images/edit";
     }
 
@@ -155,9 +153,26 @@ public class ImageController {
     //The method calls the deleteImage() method in the business logic passing the id of the image to be deleted
     //Looks for a controller method with request mapping of type '/images'
     @RequestMapping(value = "/deleteImage", method = RequestMethod.DELETE)
-    public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId) {
-        imageService.deleteImage(imageId);
-        return "redirect:/images";
+    public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId,HttpSession session , Model model) {
+
+        User user = (User) session.getAttribute("loggeduser");
+        Image image = imageService.getImage(imageId);
+
+        if(user.getId() != image.getUser().getId() )
+        {
+            model.addAttribute("deleteError", new Boolean(true));
+            String tags = convertTagsToString(image.getTags());
+            model.addAttribute("image", image);
+            model.addAttribute("tags", tags);
+            return "images/image" ;
+        }else
+        {
+            imageService.deleteImage(imageId);
+            return "redirect:/images";
+        }
+
+
+
     }
 
 
