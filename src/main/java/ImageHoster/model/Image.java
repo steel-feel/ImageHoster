@@ -24,6 +24,8 @@ public class Image {
     @Column(name = "title")
     private String title;
 
+
+
     // Text is a Postgres specific column type that allows you to save
     // text based data that will be longer than 256 characters
     // this is a base64 encoded version of the image
@@ -51,6 +53,12 @@ public class Image {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Tag> tags = new ArrayList<>();
 
+    //Feature: added comments option for a image
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "image")
+    private List<Comment> comments = new ArrayList<>();
+
+
+
     public Image() {
     }
 
@@ -70,7 +78,13 @@ public class Image {
     }
 
 
+    public List<Comment> getComments() {
+        return comments;
+    }
 
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
     public Integer getId() {
         return id;
     }
