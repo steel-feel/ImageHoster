@@ -105,9 +105,9 @@ public class ImageController {
         User user = (User) session.getAttribute("loggeduser");
         Image image = imageService.getImage(imageId);
 
-        String tags = convertTagsToString(image.getTags());
+       // String tags = image.getTags();
         model.addAttribute("image", image);
-        model.addAttribute("tags", tags);
+        model.addAttribute("tags", image.getTags());
         if(image.getUser().getId() != user.getId())
         {
             model.addAttribute("editError", new Boolean(true));
@@ -166,9 +166,9 @@ public class ImageController {
         if(user.getId() != image.getUser().getId() )
         {
             model.addAttribute("deleteError", new Boolean(true));
-            String tags = convertTagsToString(image.getTags());
+         //   String tags = convertTagsToString(image.getTags());
             model.addAttribute("image", image);
-            model.addAttribute("tags", tags);
+            model.addAttribute("tags", image.getTags());
             return "images/image" ;
         }else
         {
